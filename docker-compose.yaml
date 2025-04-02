@@ -1,0 +1,27 @@
+version: '3.9'
+services:
+  api:
+    build: ./api
+    image: kkanho/api
+    ports:
+      - "8000:8000"
+      - "5678:5678" # debugpy
+    volumes:
+      - ./api:/usr/src/api
+    environment:
+      # - DATABASE_URL=mysql://user:password@db/db
+      - CHOKIDAR_USEPOLLING=true # hot reload
+    # restart: always
+  app:
+    build: ./app
+    image: kkanho/app
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./app:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true # hot reload
+    depends_on:
+      - api
