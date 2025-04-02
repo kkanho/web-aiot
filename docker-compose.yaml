@@ -4,7 +4,7 @@ services:
     build: ./api
     image: kkanho/api
     ports:
-      - "8000:8000"
+      - "8000:80"
       - "5678:5678" # debugpy
     volumes:
       - ./api:/usr/src/api

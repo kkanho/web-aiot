@@ -6,8 +6,7 @@ function App() {
   const [data, setData] = useState("")
 
   useEffect(() => {
-    // fetch("http://web-aiot-api:8000/")
-    fetch("http://localhost:8000/")
+    fetch(import.meta.env.VITE_BACKEND_URL)
       .then((response) => response.text())
       .then((data) => setData(data))
       .catch((error) => console.error("Error fetching data:", error));
