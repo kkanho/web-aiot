@@ -3,7 +3,7 @@ import d from "./assets/data.json"
 import { Download, Heart } from "lucide-react";
 import LiveVitals from "./components/LiveVitals";
 import HealthTrends from "./components/HealthTrends";
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 
 type DataFromThingSpeak = {
   created_at: string,
