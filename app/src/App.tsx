@@ -2,6 +2,8 @@
 import d from "./assets/data.json"
 import { Download, Heart } from "lucide-react";
 import LiveVitals from "./components/LiveVitals";
+import HealthTrends from "./components/HealthTrends";
+import { useEffect, useState } from "react";
 
 type DataFromThingSpeak = {
   created_at: string,
@@ -44,6 +46,7 @@ function App() {
   // }, []);
 
   const data: Data[] = mapData(d);
+  const realTimeData = data[data.length - 1];
 
 
   return (
@@ -54,7 +57,10 @@ function App() {
             <Heart className="mr-2 h-6 w-6" />
             <h1 className="text-lg font-semibold">HealthMonitor</h1>
           </div>
-          <button className="flex justify-between rounded border-2 shadow-md px-4 py-2 hover:bg-gray-100">
+          <button 
+            className="flex justify-between rounded border-2 shadow-md px-4 py-2 hover:bg-gray-100"
+            onClick={() => window.print()}
+          >
             <Download className="mr-2 h-6 w-6" />
             <span>Export</span>
           </button>
@@ -68,11 +74,20 @@ function App() {
             {
               data ? (
                 <>
-                  <div className="sm:flex justify-between mt-4 mb-2">
-                    <h2 className="text-lg font-semibold">Live Vitals</h2>
-                    <p className='text-sm text-gray-500'>Last updated: {new Date(data[data.length - 1].created_at).toTimeString()}</p> 
-                  </div>
-                  <LiveVitals data={data[data.length - 1]} />
+                  <section id="vitals" className="mt-4 mb-2">
+                    <div className="sm:flex justify-between mt-4 mb-2">
+                      <h2 className="text-lg font-semibold">Live Vitals</h2>
+                      <p className='text-sm text-gray-500'>Last updated: {new Date(realTimeData.created_at).toTimeString()}</p> 
+                    </div>
+                    <LiveVitals data={realTimeData} />
+                  </section>
+                  <section id="trends" className="mt-4 mb-2">
+                    <div className="sm:flex justify-between mt-4 mb-2">
+                      <h2 className="text-lg font-semibold">Health Trends</h2>
+                      <p className='text-sm text-gray-500'>Last updated: {new Date(realTimeData.created_at).toTimeString()}</p> 
+                    </div>
+                    <HealthTrends data={data} />
+                  </section>
                 </>
               ) : (
                 <div>

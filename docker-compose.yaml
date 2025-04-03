@@ -1,5 +1,17 @@
 version: '3.9'
 services:
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: mosquitto
+    ports:
+      - "1883:1883"  # MQTT port
+      - "9001:9001"  # Websocket port (optional)
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    networks:
+      - web-iot-network
   api:
     build: ./api
     image: kkanho/api
@@ -12,6 +24,10 @@ services:
       # - DATABASE_URL=mysql://user:password@db/db
       - CHOKIDAR_USEPOLLING=true # hot reload
     # restart: always
+    networks:
+      - web-iot-network
+    depends_on:
+      - mosquitto
   app:
     build: ./app
     image: kkanho/app
@@ -23,5 +39,12 @@ services:
     environment:
       - WATCHPACK_POLLING=true
       - CHOKIDAR_USEPOLLING=true # hot reload
+    networks:
+      - web-iot-network
     depends_on:
       - api
+      - mosquitto
+
+networks:
+  web-iot-network:
+    driver: bridge

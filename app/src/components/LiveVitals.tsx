@@ -61,7 +61,7 @@ const LiveVitals = ({data, ...props}: LiveVitalsProps) => {
                         <span className="">
                             <p className='text-sm text-gray-500'>Steps today</p>
                         </span>
-                        <ProgressBar value={Number(data.steps)} offset={0} min={200} max={10000} />
+                        <ProgressBar value={Number(data.steps)} offset={0} min={200} max={15000} />
                     </div>
                 </div>
             ) : (
