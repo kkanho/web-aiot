@@ -13,10 +13,15 @@ services:
     networks:
       - web-iot-network
   api:
-    build: ./api
-    image: kkanho/api
+    build: 
+      context: ./api
+      dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
+        - linux/arm64
+    image: kkanho/api:latest
     ports:
-      - "8000:80"
+      - "8000:8000"
       - "5678:5678" # debugpy
     volumes:
       - ./api:/usr/src/api
@@ -29,10 +34,16 @@ services:
     depends_on:
       - mosquitto
   app:
-    build: ./app
-    image: kkanho/app
+    build: 
+      context: ./app
+      dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
+        - linux/arm64
+    image: kkanho/app:latest
     ports:
       - "5173:5173"
+      - "80"
     volumes:
       - ./app:/usr/src/app
       - /usr/src/app/node_modules
