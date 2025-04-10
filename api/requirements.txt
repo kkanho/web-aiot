@@ -1,3 +1,6 @@
 fastapi[standard]
 pydantic
 fastapi-mqtt
+pandas
+joblib
+scikit-learn

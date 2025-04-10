@@ -11,10 +11,11 @@ type DataFromMQTT = {
   field2: string,
   field3: number,
   field4: number,
-  field5: number
+  field5: number,
+  alert?: string // alert message
 }
 
-interface DataFromThingSpeak extends DataFromMQTT {
+interface DataFromThingSpeak extends Omit<DataFromMQTT, "alert"> {
   entry_id: number,
 }
 
@@ -58,7 +59,8 @@ function App() {
   const [data, setData] = useState<Data[] | null>(null);
   const [realTimeData, setRealTimeData] = useState<Data | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  // const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
+  const [alertTimer, setAlertTimer] = useState<number>(30); // 30 seconds
+  const [isUnhealthy, setIsUnhealthy] = useState<boolean>(false);
 
   // Fetch data from the Thingspeak API (Initial Fetch)
   useEffect(() => {
@@ -72,6 +74,9 @@ function App() {
   }, []);
 
   useEffect(() => {
+
+    console.log("Executing MQTT useEffect");
+
     mqttClient.on("connect", () => {
       setIsConnected(true);
     });
@@ -80,9 +85,13 @@ function App() {
     mqttSubscribe(topic, 1);
 
     mqttClient.on("message", (topic: string, message) => {
-      console.log(`received message: ${message} from topic: ${topic}`);
+      // console.log(`received message: ${message} from topic: ${topic}`);
       const mqttData = JSON.parse(message.toString()) as DataFromMQTT;
-      console.log(mqttData);
+      console.log("mqttData", mqttData);
+
+      if (mqttData.alert && mqttData.alert == "Unhealthy") {
+        setIsUnhealthy(true);
+      }
 
       // Map the MQTT data to the Data type
       const mappedData: Data = {
@@ -95,6 +104,15 @@ function App() {
       }
       setRealTimeData(mappedData);
 
+      // Append the new data to the existing data
+      setData((prev) => {
+        if (prev) {
+          return [...prev, mappedData];
+        } else {
+          return [mappedData];
+        }
+      })
+
     });
 
     mqttClient.on("error", (error) => {
@@ -103,17 +121,23 @@ function App() {
 
   }, [isConnected]);
 
-  // Test: Fetch hello world from backend
+  // Alert timer
   useEffect(() => {
-    fetch(`http://${import.meta.env.VITE_BACKEND_URL}/api`)
-      .then((res) => res.json())
-      .then((json) => {
-        console.log(json);
-      })
-      .catch((error) => console.error("Error fetching data:", error));
-  }, [])
+    const timer = setInterval(() => {
+      setAlertTimer((prev) => prev + 1);
+    }, 1000); // 1 second interval
 
-  // const data: Data[] = mapData(d);
+    return () => clearInterval(timer);
+  }, [alertTimer]);
+
+  // Alert for unhealthy vitals
+  useEffect(() => {
+    if (isUnhealthy && alertTimer >= 30) {
+      alert("Unhealthy vitals detected! Please check your health.");
+      setIsUnhealthy(false); // reset the unhealthy state
+      setAlertTimer(0); // reset the alert timer
+    }
+  }, [isUnhealthy, alertTimer]);
 
   return (
     <>
@@ -143,8 +167,7 @@ function App() {
           <p className="text-sm text-gray-500">Your vitals and health trends</p>
           <div>
             {
-              data && realTimeData ? (
-                <>
+              realTimeData && (
                   <section id="vitals" className="mt-4 mb-2">
                     <div className="sm:flex justify-between mt-4 mb-2">
                       <h2 className="text-lg font-semibold">Live Vitals</h2>
@@ -152,20 +175,26 @@ function App() {
                     </div>
                     <LiveVitals data={realTimeData} />
                   </section>
+                )
+              }
+              {
+                data && (
                   <section id="trends" className="mt-4 mb-2">
                     <div className="sm:flex justify-between mt-4 mb-2">
                       <h2 className="text-lg font-semibold">Health Trends</h2>
-                      <p className='text-sm text-gray-500'>Last updated: {new Date(realTimeData.created_at).toTimeString()}</p> 
+                      <p className='text-sm text-gray-500'>Last updated: {new Date(data[data.length - 1].created_at).toTimeString()}</p> 
                     </div>
                     <HealthTrends data={data} />
                   </section>
-                </>
-              ) : (
-                <div>
+                ) 
+              }
+              {
+                !data && !realTimeData && (
+                  <div>
                   <p>Loading...</p>
-                </div>
-              )
-            }
+                  </div>
+                )
+              }
           </div>
 
         </div>
