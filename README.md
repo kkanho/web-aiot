@@ -4,7 +4,7 @@
     # Start locally
     make dev
 
-    # Depoly
+    # Deploy
     make deploy PASSWORD=REPLACE_THIS_WITH_PASSWORD
 ```
 
