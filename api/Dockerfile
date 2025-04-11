@@ -4,11 +4,6 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 RUN pip install debugpy
 COPY . .
-
 EXPOSE 8000
 
-# debugpy
 CMD ["python", "-m", "debugpy", "--listen", "0.0.0.0:5678", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
-
-# Depoloyment
-# CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

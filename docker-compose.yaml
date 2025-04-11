@@ -1,8 +1,13 @@
-version: '3.9'
 services:
   mosquitto:
-    image: eclipse-mosquitto:2.0
+    build:
+      context: ./mosquitto
+      dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
+        - linux/arm64
     container_name: mosquitto
+    image: kkanho/mosquitto:latest
     ports:
       - "1883:1883"  # MQTT port
       - "9001:9001"  # Websocket port (optional)
@@ -12,13 +17,16 @@ services:
       - ./mosquitto/log:/mosquitto/log
     networks:
       - web-iot-network
-  api:
+  api: # backend
     build: 
       context: ./api
       dockerfile: Dockerfile
       platforms:
         - linux/amd64
         - linux/arm64
+      args:
+        NODE_ENV: development
+    container_name: backend-fastapi
     image: kkanho/api:latest
     ports:
       - "8000:8000"
@@ -26,24 +34,25 @@ services:
     volumes:
       - ./api:/usr/src/api
     environment:
-      # - DATABASE_URL=mysql://user:password@db/db
       - CHOKIDAR_USEPOLLING=true # hot reload
     # restart: always
     networks:
       - web-iot-network
     depends_on:
       - mosquitto
-  app:
+  app: # frontend
     build: 
       context: ./app
       dockerfile: Dockerfile
       platforms:
         - linux/amd64
         - linux/arm64
+      args:
+        NODE_ENV: development
+    container_name: frontend-react
     image: kkanho/app:latest
     ports:
-      - "5173:5173"
-      - "80"
+      - "3000:3000"
     volumes:
       - ./app:/usr/src/app
       - /usr/src/app/node_modules

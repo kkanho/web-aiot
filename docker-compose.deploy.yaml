@@ -1,0 +1,48 @@
+version: '3'
+services:
+  nginx:
+    image: webaiotfastapi.azurecr.io/nginx:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+      - api
+      - mosquitto
+    networks:
+      - web-iot-network
+  mosquitto:
+    image: webaiotfastapi.azurecr.io/mosquitto:latest
+    ports:
+      - "1883:1883"  # MQTT port
+      - "9001:9001"  # Websocket port (optional)
+    networks:
+      - web-iot-network
+  api: # backend
+    image: webaiotfastapi.azurecr.io/api:latest
+    ports:
+      - "8000"
+    environment:
+      - CHOKIDAR_USEPOLLING=true # hot reload
+    # restart: always
+    networks:
+      - web-iot-network
+    depends_on:
+      - mosquitto
+  app: # frontend
+    image: webaiotfastapi.azurecr.io/app:latest
+    ports:
+      - "3000"
+    volumes:
+      - /usr/src/app/node_modules
+    environment:
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true # hot reload
+    networks:
+      - web-iot-network
+    depends_on:
+      - api
+      - mosquitto
+
+networks:
+  web-iot-network:
+    driver: bridge

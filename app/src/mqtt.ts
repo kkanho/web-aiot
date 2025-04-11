@@ -1,9 +1,14 @@
 import mqtt, { IClientSubscribeOptions } from "mqtt";
 
+const isHttps = window.location.protocol === 'https:';
+
+const wsProtocol = isHttps ? 'wss://' : 'ws://';
+const proxyRoute = isHttps ? '/ws' : '';
+const port = !isHttps ? `:${import.meta.env.VITE_MQTT_BROKER_PORT}` : '';
+
 // Connect to the MQTT broker
-export const mqttClient = mqtt.connect({
-    host: import.meta.env.VITE_MQTT_BROKER_URL,
-    port: import.meta.env.VITE_MQTT_BROKER_PORT,
+// Reverse proxy route all /ws traffic to the MQTT broker
+export const mqttClient = mqtt.connect(`${wsProtocol}${import.meta.env.VITE_MQTT_BROKER_URL}${port}${proxyRoute}`, {
     clientId: "react_mqtt_".concat(Math.random().toString(16).slice(2)),
 })
 

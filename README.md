@@ -1,13 +1,15 @@
 
 ## Available Scripts
 ```sh
-    # Build container
-    docker-compose up --build
+    # Start locally
+    make dev
+
+    # Depoly
+    make deploy PASSWORD=REPLACE_THIS_WITH_PASSWORD
 ```
 
 Front-end
 http://localhost:5173/
-https://web-aiot.netlify.app/
 
 Back-end
 http://localhost:8000/docs#/

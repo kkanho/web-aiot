@@ -36,9 +36,10 @@ async def _lifespan(_app: FastAPI):
 app = FastAPI(lifespan=_lifespan)
 
 origins = [
-    "http://localhost:5173",  # Vite development server
-    "localhost:5173",
-    "http://192.168.50.61" # ipad
+    # "http://localhost:5173",  # Vite development server
+    # "localhost:5173",
+    # "http://192.168.50.61", # ipad
+    "*"
 ]
 
 app.add_middleware(

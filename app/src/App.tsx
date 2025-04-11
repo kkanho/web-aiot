@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-// import d from "./assets/data.json"
 import { Download, Heart } from "lucide-react";
 import LiveVitals from "./components/LiveVitals";
 import HealthTrends from "./components/HealthTrends";
@@ -84,7 +83,7 @@ function App() {
     // Subscribe to the MQTT topic
     mqttSubscribe(topic, 1);
 
-    mqttClient.on("message", (topic: string, message) => {
+    mqttClient.on("message", (_topic: string, message) => {
       // console.log(`received message: ${message} from topic: ${topic}`);
       const mqttData = JSON.parse(message.toString()) as DataFromMQTT;
       console.log("mqttData", mqttData);
