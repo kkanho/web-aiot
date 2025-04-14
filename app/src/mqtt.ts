@@ -5,10 +5,11 @@ const isHttps = window.location.protocol === 'https:';
 const wsProtocol = isHttps ? 'wss://' : 'ws://';
 const proxyRoute = isHttps ? '/ws' : '';
 const port = !isHttps ? `:${import.meta.env.VITE_MQTT_BROKER_PORT}` : '';
+const mqttBrokerDomain = isHttps ? "web-aiot.azurewebsites.net" : "localhost";
 
 // Connect to the MQTT broker
 // Reverse proxy route all /ws traffic to the MQTT broker
-export const mqttClient = mqtt.connect(`${wsProtocol}${import.meta.env.VITE_MQTT_BROKER_URL}${port}${proxyRoute}`, {
+export const mqttClient = mqtt.connect(`${wsProtocol}${mqttBrokerDomain}${port}${proxyRoute}`, {
     clientId: "react_mqtt_".concat(Math.random().toString(16).slice(2)),
 })
 

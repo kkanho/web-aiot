@@ -12,6 +12,7 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.0.17",
     "chart.js": "^4.4.8",
+    "date-fns": "^4.1.0",
     "lucide-react": "^0.487.0",
     "mqtt": "^5.10.4",
     "react": "^19.0.0",
