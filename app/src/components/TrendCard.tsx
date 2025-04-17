@@ -57,7 +57,7 @@ const TrendCard = ({vital, icon, labels, data, data2, borderColor, backgroundCol
                     ],
                 }} className="forPrinting"/>
             </div>
-    </div>
+        </div>
     )
 }
 

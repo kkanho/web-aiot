@@ -5,6 +5,7 @@ import HealthTrends from "./components/HealthTrends";
 import { mqttClient, mqttSubscribe } from "./mqtt";
 import { formatDistanceToNow } from "date-fns";
 import HealthDashboard from "./components/HealthDashboard";
+import WeeklyHealthTrends from "./components/WeeklyHealthTrends";
 
 type DataFromMQTT = {
   created_at: string,
@@ -252,7 +253,7 @@ function App() {
               )
             }
           </div>
-          <div className="flex flex-col md:gap-2">
+          <div className="flex flex-col gap-0.5 md:gap-2">
             {
               realTimeData && (
                 <section id="vitals" className="mt-4 mb-2">
@@ -288,9 +289,20 @@ function App() {
             }
             {
               data && (
-                <section id="dashboard" className="mt-4 mb-2">
+                <section id="weekly-trends" className="mt-4 mb-2">
                   <div className="sm:flex justify-between mt-4 mb-2">
-                    <h2 className="text-lg font-semibold">Dashboard</h2>
+                    <h2 className="text-lg font-semibold">Weekly Trends</h2>
+                    <p className='text-sm text-gray-500 self-center'>Last updated: {data[data.length - 1]?.created_at? new Date(data[data.length - 1].created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }): "Data not avaliable"}</p> 
+                  </div>
+                  <WeeklyHealthTrends data={data} />
+                </section>
+              )
+            }
+            {
+              data && (
+                <section id="records" className="mt-4 mb-2">
+                  <div className="sm:flex justify-between mt-4 mb-2">
+                    <h2 className="text-lg font-semibold">Historical Records</h2>
                     <p className='text-sm text-gray-500'>Last updated: {data[data.length - 1]?.created_at? new Date(data[data.length - 1].created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "Data not avaliable"}</p> 
                   </div>
                   <HealthDashboard data={data? data : null} />
