@@ -38,7 +38,7 @@ const WeeklyTrendCard = ({vital, label, icon, labels, data, borderColor, backgro
                             backgroundColor: backgroundColor,
                         },
                     ],
-                }} className="forPrinting"/>
+                }} className="forChartPrinting"/>
             </div>
         </div>
     )

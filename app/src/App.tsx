@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Download, Heart } from "lucide-react";
+import { ChartColumnIcon, ChartSpline, Download, Heart, History, Radio } from "lucide-react";
 import LiveVitals from "./components/LiveVitals";
 import HealthTrends from "./components/HealthTrends";
 import { mqttClient, mqttSubscribe } from "./mqtt";
@@ -237,6 +237,42 @@ function App() {
           </div>
         </div>
       </header>
+      <nav className="hidden md:flex flex-col gap-4 z-[9999] p-2 fixed top-[45%] md:right-8 justify-center items-center">
+        <ul className="flex flex-col gap-2">
+          <li 
+            className="text-slate-600 text-center bg-slate-50 border rounded-full p-2 hover:bg-slate-100"
+            title="Live Vitals"
+          >
+            <a href="#vitals" >
+              <Radio className="h-6 w-6" />
+            </a>
+          </li>
+          <li 
+            className="text-slate-600 text-center bg-slate-50 border rounded-full p-2 hover:bg-slate-100"
+            title="Health Trends"
+          >
+            <a href="#trends">
+              <ChartSpline className="h-6 w-6" />
+            </a>
+          </li>
+          <li 
+            className="text-slate-600 text-center bg-slate-50 border rounded-full p-2 hover:bg-slate-100"
+            title="Weekly Trends"
+          >
+            <a href="#weekly-trends">
+              <ChartColumnIcon className="h-6 w-6" />
+            </a>
+          </li>
+          <li 
+            className="text-slate-600 text-center bg-slate-50 border rounded-full p-2 hover:bg-slate-100"
+            title="Historical Records"
+          >
+            <a href="#records">
+              <History className="h-6 w-6" />
+            </a>
+          </li>
+        </ul>
+      </nav>
       <main className="px-2 md:px-0">
         <div className="flex flex-col justify-between px-0 sm:px-4 xl:px-96">
           <div className="flex flex-col md:flex-row justify-between items-center">
@@ -258,7 +294,10 @@ function App() {
               realTimeData && (
                 <section id="vitals" className="mt-4 mb-2">
                   <div className="sm:flex justify-between mt-4 mb-2">
-                    <h2 className="text-lg font-semibold self-center">Live Vitals</h2>
+                    <span className="flex items-center">
+                      <Radio className="mr-2 h-6 w-6 animate-pulse" />
+                      <h2 className="text-lg font-semibold self-center">Live Vitals</h2>
+                    </span>
                     <p className='text-sm text-gray-500'>Last updated: {realTimeData?.created_at? new Date(realTimeData.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "Data not avalible"}</p> 
                   </div>
                   <LiveVitals data={realTimeData} />
@@ -269,7 +308,10 @@ function App() {
               data && (
                 <section id="trends" className="mt-4 mb-2">
                   <div className="sm:flex justify-between mt-4 mb-2">
-                    <h2 className="text-lg font-semibold">Health Trends</h2>
+                    <span className="flex items-center">
+                      <ChartSpline className="mr-2 h-6 w-6" />
+                      <h2 className="text-lg font-semibold">Health Trends</h2>
+                    </span>
                     <div className="flex gap-2">
                       <select 
                         className="self-center border rounded px-2 py-1" 
@@ -291,7 +333,10 @@ function App() {
               data && (
                 <section id="weekly-trends" className="mt-4 mb-2">
                   <div className="sm:flex justify-between mt-4 mb-2">
-                    <h2 className="text-lg font-semibold">Weekly Trends</h2>
+                    <span className="flex items-center">
+                      <ChartColumnIcon className="mr-2 h-6 w-6" />
+                      <h2 className="text-lg font-semibold">Weekly Trends</h2>
+                    </span>
                     <p className='text-sm text-gray-500 self-center'>Last updated: {data[data.length - 1]?.created_at? new Date(data[data.length - 1].created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }): "Data not avaliable"}</p> 
                   </div>
                   <WeeklyHealthTrends data={data} />
@@ -302,7 +347,10 @@ function App() {
               data && (
                 <section id="records" className="mt-4 mb-2">
                   <div className="sm:flex justify-between mt-4 mb-2">
-                    <h2 className="text-lg font-semibold">Historical Records</h2>
+                    <span className="flex items-center">
+                      <History className="mr-2 h-6 w-6" />
+                      <h2 className="text-lg font-semibold">Historical Records</h2>
+                    </span>
                     <p className='text-sm text-gray-500'>Last updated: {data[data.length - 1]?.created_at? new Date(data[data.length - 1].created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "Data not avaliable"}</p> 
                   </div>
                   <HealthDashboard data={data? data : null} />

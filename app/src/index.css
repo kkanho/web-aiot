@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
-.forPrinting {
+.forChartPrinting {
     width: 100% !important;
+    height: auto !important;
 }
