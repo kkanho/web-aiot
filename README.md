@@ -22,8 +22,7 @@ The frontend web application: [https://web-aiot.azurewebsites.net/](https://web-
 
 The fastapi backend API: [https://web-aiot.azurewebsites.net/api](https://web-aiot.azurewebsites.net/api)
 
-The MQTT Broker through webSocket [wss://web-aiot.azurewebsites.net/ws](wss://web-aiot.azurewebsites.net/ws) 
-Subscribe topics: “vitals”
+The MQTT Broker through WebSocket [wss://web-aiot.azurewebsites.net/ws](wss://web-aiot.azurewebsites.net/ws) and subscribe topic “vitals”
 
 ## Deploy sites simulation
 IOS shortcut or python script can be used to simulate the live vitals collected from smartwatch
@@ -37,11 +36,11 @@ IOS shortcut link: [https://www.icloud.com/shortcuts/f8af79a42ab947728b2e4c25ec5
 
 ## For development
 Frontend
-http://localhost:3000/
+- http://localhost:3000/
 
 Backend
-http://localhost:8000/docs#/
+- http://localhost:8000/docs#/
 
 MQTT Broker
-http://localhost:1883/
-http://localhost:9001/
+- http://localhost:1883/
+- http://localhost:9001/
