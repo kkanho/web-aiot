@@ -1,5 +1,5 @@
 import { Triangle } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Data } from "../App"
 
 
@@ -11,6 +11,12 @@ const HealthDashboard = ({data, ...props}: HealthDashboardProps) => {
 
     const [dashboardData, setDashboardData] = useState<Data[] | null>(data); // For dashboard data
     const triangleRef = useRef<SVGSVGElement>(null);
+
+    useEffect(() => {
+        if (data) {
+            setDashboardData(data);
+        }
+    }, [data])
 
     return (
         <div className="max-h-screen overflow-y-auto border border-slate-300 rounded relative" {...props}>

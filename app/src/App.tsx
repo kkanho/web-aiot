@@ -101,6 +101,7 @@ function App() {
   const [realTimeData, setRealTimeData] = useState<Data | null>(null); // From MQTT
   const [isConnected, setIsConnected] = useState<boolean>(false); // MQTT connection status
   const [alertTimer, setAlertTimer] = useState<number>(30); // 30 seconds
+  const [alertFlag, setAlertFlag] = useState<boolean>(false); // For alerting
   const [isUnhealthy, setIsUnhealthy] = useState<boolean>(false); // For health alerts
   const [period, setPeriod] = useState<string>("15 minutes"); // For trends filtering
   const [filteredData, setFilteredData] = useState<Data[] | null>(null);
@@ -183,7 +184,7 @@ function App() {
       console.error("MQTT error:", error);
     });
 
-  }, [isConnected]);
+  }, []);
 
   // Alert timer
   useEffect(() => {
@@ -192,20 +193,28 @@ function App() {
     }, 1000); // 1 second interval
 
     return () => clearInterval(timer);
-  }, [alertTimer]);
+  }, []);
+
+  // Alert flag
+  useEffect(() => {
+    if (alertTimer > 30) setAlertFlag(true);
+  }, [alertTimer])
 
   // Alert for unhealthy vitals
   useEffect(() => {
-    if (isUnhealthy && alertTimer >= 30) {
-      // wait the ui changes for 3 seconds before alerting
-      const f = new Promise((resolve) => setTimeout(resolve, 3000));
+    if (isUnhealthy && alertFlag) {
+
+      console.log("Alert for unhealthy vitals triggered");
+      // wait the ui changes for 2 seconds before alerting
+      const f = new Promise((resolve) => setTimeout(resolve, 2000));
       f.then(() => {
         alert("Unhealthy vitals detected! Please check your health.");
         setIsUnhealthy(false); // reset the unhealthy state
+        setAlertFlag(false); // reset the alert flag
         setAlertTimer(0); // reset the alert timer
       })
     }
-  }, [isUnhealthy, alertTimer]);
+  }, [isUnhealthy, alertFlag]);
 
   // For Health Trends, filter data based on the selected period
   useEffect(() => {
